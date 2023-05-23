@@ -219,12 +219,17 @@ const SSListingAuto = ({item,id,showXarrow}) => {
                     <Image
                       src={journeyStepItem.ss[0].location}
                       objectFit="fill"
-                      id={StepId==0?`${journeyStepItem.item_id}start-${id}-${StepId}`:""}
-                      css={{ maxHeight: `${StepId==0?"80vh":"70vh"}`, minWidth: "auto",border:"1px solid black" }}
+                      id={StepId==0?`${journeyStepItem.item_id}start2-${id}-${StepId}`:""}
+                      css={{ maxHeight: `${StepId==0?"80vh":"70vh"}`, minWidth: "auto",border:"1px solid #D0D0D0" }}
                     />}
         
         {StepId==0?
         <>
+        <div id={`${journeyStepItem.item_id}start-${id}-${StepId}`}  style={{position: "absolute", left: "50%",top:"-300%",height:"700%",background:"red"}}>
+      <div  style={{position: "relative", top: "50%", border: "dotted red 1px",display:"none"}}>
+        .
+      </div>
+    </div>
     </>
     :
     <>
