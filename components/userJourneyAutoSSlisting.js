@@ -200,8 +200,9 @@ const SSListingAuto = ({item,id,showXarrow}) => {
                     marginTop:"20px",
                     marginBottom:"20px",
                   }}>
-                    <div style={{paddingTop:"10px",paddingRight:"10px",}}>
-                    {(journeyStepItem.metric && journeyStepItem.metric=="click")?<>
+                    <div style={{paddingTop:"10px",paddingRight:"0",}}>
+                    {(journeyStepItem.metric && journeyStepItem.metric=="click")?
+                    <>
                     {/* <Grid.Container id={StepId==0?"":`${journeyStepItem.item_id}start-${id}-${StepId}`} css={{padding:"10px 10px",minHeight:`${StepId==0?"40vh":"auto"}`,borderStyle:"solid",borderColor: '#201E7B',alignContent:"center",borderRadius:"50%",height:"100px",width:"100px",background:"#201E7B",justifyContent:"left"}}>
                     <div style={{background:"#201E7B",height:"auto",padding:"",alignItems:"center",width:"150px"}}>
                     <h5 style={{margin:"auto",textAlign:"center",color:"white"}}>{journeyStepItem.clickEvent.toUpperCase()}</h5>
@@ -218,17 +219,12 @@ const SSListingAuto = ({item,id,showXarrow}) => {
                     <Image
                       src={journeyStepItem.ss[0].location}
                       objectFit="fill"
-                      id={StepId==0?`${journeyStepItem.item_id}start2-${id}-${StepId}`:""}
-                      css={{ maxHeight: `${StepId==0?"80vh":"70vh"}`, minWidth: "auto" }}
+                      id={StepId==0?`${journeyStepItem.item_id}start-${id}-${StepId}`:""}
+                      css={{ maxHeight: `${StepId==0?"80vh":"70vh"}`, minWidth: "auto",border:"1px solid black" }}
                     />}
         
         {StepId==0?
         <>
-        <div id={`${journeyStepItem.item_id}start-${id}-${StepId}`}  style={{position: "absolute", left: "50%",top:"-300%",height:"700%",background:"red"}}>
-      <div  style={{position: "relative", top: "50%", border: "dotted red 1px",display:"none"}}>
-        .
-      </div>
-    </div>
     </>
     :
     <>
@@ -254,6 +250,8 @@ const SSListingAuto = ({item,id,showXarrow}) => {
                   <Xarrow showXarrow={xArrowDisp && showXarrow}
           strokeWidth={2}
           showHead={false}
+          startAnchor="right"
+          endAnchor="left"
           showTail={true}
           tailShape="circle"
           tailSize={3}
@@ -262,6 +260,8 @@ const SSListingAuto = ({item,id,showXarrow}) => {
         />
         <Xarrow showXarrow={xArrowDisp && showXarrow}
           strokeWidth={2}
+          startAnchor="right"
+          endAnchor="left"
           showHead={false}
           showTail={true}
           start={`socialRef2-${id}`} //can be react ref
@@ -275,11 +275,15 @@ const SSListingAuto = ({item,id,showXarrow}) => {
             showTail={true}
             tailShape="circle"
             tailSize={3}
+            startAnchor="right"
+            endAnchor="left"
           start={`socialRef3-${id}`} //can be react ref
           end={`${journeyStepItem.item_id}start-${id}-${StepId}`} //or an id
         />
         <Xarrow showXarrow={xArrowDisp && showXarrow}
      strokeWidth={2}
+     startAnchor="right"
+     endAnchor="left"
      showHead={false}
 showTail={true}
 tailShape="circle"
@@ -289,6 +293,8 @@ tailShape="circle"
         />
         <Xarrow showXarrow={xArrowDisp && showXarrow}
      strokeWidth={2}
+     startAnchor="right"
+     endAnchor="left"
      showHead={false}
 showTail={true}
 tailShape="circle"

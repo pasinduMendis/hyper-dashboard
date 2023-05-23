@@ -1,12 +1,15 @@
-/* eslint-disable @next/next/no-sync-scripts */
-import React from 'react';
+import '../styles/globals.css'
+import { SSRProvider } from "@react-aria/ssr";
+/* import 'bootstrap/dist/css/bootstrap.css'; */
+/* import '../styles/bootstrap.min.css' */
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap" rel="stylesheet" />
 
-const MyApp = ({ Component, pageProps }) => {
+function MyApp({ Component, pageProps }) {
   return (
-    <React.Fragment>
-      <Component {...pageProps} />
-    </React.Fragment>
-  );
-};
+      <SSRProvider>
+        <Component {...pageProps} />
+      </SSRProvider>
+  )
+}
 
-export default MyApp;
+export default MyApp
