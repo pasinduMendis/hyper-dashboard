@@ -26,9 +26,7 @@ class MyDocument extends Document {
                 const originalPush = window.history.pushState;
                   window.history.pushState = function() {
                   originalPush.apply(window.history, arguments);
-                  console.log('test');
-                  onloadFunction();
-                  // Additional code goes here
+                  HYPERSNIPPET.initURLSinglePage(["94a425fe-196b-4013-b3a0-353acc6645e3","0dcdac2a-dde3-4bc0-acc3-c7fa9ab01fb6"]);
                 };
               `,
             }}
