@@ -13,8 +13,7 @@ const requestObj = {
 }
 
 
-async function getPixel(session) {
-
+async function getPixel(session,webisteId) {
     try {
         const config = {
             headers: {
@@ -23,10 +22,10 @@ async function getPixel(session) {
             }
         }
 
-        const url = process.env.BASE_URL + 'website/generatePixelId';
+        const url = process.env.BASE_URL + 'website/generatePixelId/'+webisteId;
         //console.log("**2")
         const res = await axios.get(url,config);
-        //console.log("res : ",res.data)
+        console.log("test :",res.data)
 
         if (res.status === 200) {
             return res.data;
@@ -60,11 +59,11 @@ async function verifyPixel(session, websiteId) {
             return res.data;
             
         } else {
-            return { error: true, message: res.data.message }
+            return { error: true, message: res.data.message,verified:false }
         }
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || "An error occured"
-        return ({ error: true, message: message })
+        return ({ error: true, message: message,verified:false })
     }
 }
 
@@ -82,8 +81,7 @@ async function addDomain(session, domain) {
         const res = await axios.post(url, { domain: domain }, config);
 
         if (res.status === 200) {
-            console.log("pixel :",res.data)
-            return {error:false,message:res.data.message};
+            return {error:false,message:res.data.message,websiteId:res.data.websiteId};
             
         } else {
             return { error: true, message: res.data.message }

@@ -8,10 +8,7 @@ const requestObj = {
     "Access-Control-Allow-Methods": "GET, POST,PUT,DELETE, OPTIONS",
 }
 
-export const userJourneyService = {
-    createUserJourney,
-    getUserJourneys,
-    updateUserJourney,
+export const userJourneyService = {    
     getUserJourneysAuto,
     getUserJourneysAutoFilter,
     updateShareAllow,
@@ -22,67 +19,7 @@ export const userJourneyService = {
 
 };
 
-async function createUserJourney(session, userJourney, websiteId) {
-    try {
-        const config = {
-            headers: {
-                ...requestObj,
-                "Authorization": session.accessToken
-            }
-        }
 
-        const url = process.env.BASE_URL + 'userJourneys/createJourney' + '/' + websiteId;
-        const response = await axios.post(url, userJourney, config);
-        console.log("RES ", response)
-        if (response.status === 200) {
-            return { status: response.status, message: response.data.message };
-        } else {
-            return { status: response.status, message: "An error occured" };
-        }
-    } catch (error) {
-        return { status: 500, message: error.message.code };
-    }
-}
-
-async function updateUserJourney(session, userJourney, websiteId) {
-    try {
-        const config = {
-            headers: {
-                ...requestObj,
-                "Authorization": session.accessToken
-            }
-        }
-
-        const url = process.env.BASE_URL + 'userJourneys/updateJourney' + '/' + websiteId + '/' + userJourney.journeyId;
-        const response = await axios.put(url, userJourney, config);
-
-        return { status: response.status, message: response.data.message };
-    } catch (error) {
-        return { status: 500, message: error };
-    }
-}
-
-async function getUserJourneys(session, websiteId) {
-    try {
-        const config = {
-            headers: {
-                "Authorization": session.accessToken,
-                
-            }
-        }
-        const url = process.env.BASE_URL +'userJourneys/getJourneyByWebsiteId/'+ websiteId;
-
-        const response = await axios.get(url, config);
-        if (response.status === 200) {
-            return { status: response.status, userjourneys: response.data.userJourney}
-        } else {
-            //console.log("errrr",res.data)
-            return { status: response.status, message: response.data.message}
-        }
-    } catch (error) {
-        return { status: 500, message: error.message };
-    }
-}
 
 async function getUserJourneysAuto(session, websiteId,startDate,endDate) {
     try {

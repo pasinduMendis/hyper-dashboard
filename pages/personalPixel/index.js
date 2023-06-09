@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Button,
   Card,
@@ -28,27 +29,33 @@ function onloadFunction(){
     })
 </script>`
 
-const PersonalPixel = ({ website, error,isVerified }) => {
+const PersonalPixel = ({ website, error,isVerified,isRedirectDashboard }) => {
   const [model, setModel] = useState({ isOpen: false, success: true })
   const [loading, setLoading] = useState(false)
   const [pageLoading, setPageLoading] = useState(true)
   const router = useRouter()
+  const { query } = useRouter();
+
   const [session, setSession] = useState("");
 
   useEffect(() => {
+    
     const user = Cookies.get('user')?JSON.parse(Cookies.get('user')):null;
     const accessToken = Cookies.get('accessToken')?Cookies.get('accessToken'):null;
-    if (!user || !accessToken) {
+    if(isRedirectDashboard){
+      router.push('/dashboard')
+    }else if(query.webiteId==undefined || query.webiteId==null ||query.webiteId==""){
+      router.push('/dashboard')
+    }
+    else if (!user || !accessToken) {
       router.push('/auth/signIn')
     }
     else if ( user && accessToken && user.isSubscribed) {
       //console.log(session.user.isSubscribed)
       setSession({user,accessToken})
       if (isVerified) {
-        router.push('/userJourneys/automaticallyTrack')
+        router.push(`/userJourneys/automaticallyTrack?id=${query.webiteId}`)
        //setPageLoading(false)
-       }else if(!website.domain || website.domain==""){
-         router.push('/personalPixel/getDomain')
        }else{
          setPageLoading(false)
        }
@@ -60,11 +67,9 @@ const PersonalPixel = ({ website, error,isVerified }) => {
           router.push('/pricing')
         }else{
           if (isVerified) {
-            router.push('/userJourneys/automaticallyTrack')
+            router.push(`/userJourneys/automaticallyTrack?id=${query.webiteId}`)
            //setPageLoading(false)
-           }else if(!website.domain || website.domain==""){
-            router.push('/personalPixel/getDomain')
-          }else{
+           }else{
              setPageLoading(false)
            }
           
@@ -196,6 +201,7 @@ const PersonalPixel = ({ website, error,isVerified }) => {
 
 export async function getServerSideProps(context) {
     const { req } = context;
+    const { query } = context;
     const cookies=req.headers.cookie?context.req.headers.cookie:null;
     const userCookie = cookies ? cookies.split(';').find(c => c.trim().startsWith('user=')) : null;
     const user = userCookie ? JSON.parse(decodeURIComponent(userCookie.split('=')[1])) : null;
@@ -206,8 +212,8 @@ export async function getServerSideProps(context) {
     if (user && accessToken) {
       const session={user,accessToken}
 
-      const websiteData = await personalPixelService.getPixel(session)
-      //console.log('Website Data ', websiteData)
+      const websiteData = await personalPixelService.getPixel(session,query.webiteId)
+      console.log('Website Data ', websiteData)
       if (!websiteData.error) {
         const alredyVerified=await personalPixelService.verifyPixel(session, websiteData.website.websiteId)
         console.log(alredyVerified)
@@ -216,6 +222,14 @@ export async function getServerSideProps(context) {
             props: {
               isVerified: alredyVerified?.verified,
               session: session,
+            },
+          }
+        }
+        if(alredyVerified.status && alredyVerified.status!=200){
+          return {
+            props: {
+              error: JSON.stringify({ message: 'something went wrong!' }),
+              isRedirectDashboard:true,
             },
           }
         }
@@ -230,7 +244,8 @@ export async function getServerSideProps(context) {
         //router.push('/auth/signIn')
         return {
           props: {
-            error: JSON.stringify({ message: 'User must be logged in' }),
+            error: JSON.stringify({ message: 'something went wrong!!' }),
+            isRedirectDashboard:true,
           },
         }
       }

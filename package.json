@@ -25,6 +25,7 @@
     "panzoom": "^9.4.3",
     "react": "18.2.0",
     "react-calendar": "^4.0.0",
+    "react-credit-cards-2": "^1.0.1",
     "react-date-ranges": "^0.6.2",
     "react-dom": "18.2.0",
     "react-facebook-auth": "^1.4.0",

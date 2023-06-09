@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Button, Card, Container, Dropdown, Grid, Image, Input, Loading, Modal, Navbar, styled, Text } from '@nextui-org/react'
+import { Avatar, Button, Card, Container, Dropdown, Grid, Image, Input, Loading, Modal, Navbar, styled, Text, User } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { authService, personalPixelService, websiteService } from '../services'
 import { useState } from 'react'
@@ -23,8 +23,9 @@ function onloadFunction(){
     })
 </script>`
 
-const Header = ({backgroundCol,displayShare,filterToken}) => {
+const Header = ({backgroundCol,displayShare,filterToken,websiteData}) => {
   const router = useRouter()
+  const { query } = useRouter();
   const [session, setSession] = useState("");
   const [dispSnippet,setDispSnippet]=useState(false)
   const [dispShare,setDispShare]=useState(false)
@@ -51,24 +52,11 @@ const Header = ({backgroundCol,displayShare,filterToken}) => {
     }else{
         setSession("")
     }
+    if(websiteData){
+      setWebsite(websiteData)
+    }
   
   }, [])
-
-   useEffect(() => {
-    const getWebsite=async()=>{
-      const websiteResponse = await websiteService.getWebsiteByUser(session);
-      console.log("websiteResponse :",websiteResponse)
-    if (websiteResponse.status === 200 ) {
-      setWebsite(websiteResponse.website)
-    }
-  }
-    
-    if (session && session.accessToken) {
-      getWebsite()
-    }else{
-    }
-  
-  }, [session])
   
   
   const Box = styled('div', {
@@ -220,7 +208,7 @@ const Header = ({backgroundCol,displayShare,filterToken}) => {
     onClose={()=>{setDispShare(false)}}
   >
     <div style={{background:"var(--nextui-colors-white)",padding:"0",width:"50vw",justifyContent:"center"}}>
-      <ShareComponent user={session?.user?.name} session={session} filterToken={filterToken}/>
+      <ShareComponent user={session?.user?.name} session={session} filterToken={filterToken} id={query.id}/>
   </div>
   </Modal>
       {session && session.user ? (
@@ -236,16 +224,7 @@ const Header = ({backgroundCol,displayShare,filterToken}) => {
           }}
         >
           <Navbar.Brand>
-            <Navbar.Toggle
-              aria-label='toggle navigation'
-              css={{
-                marginRight: 10,
-                '@md': {
-                  display: 'none',
-                },
-              }}
-            />
-            <Link href='/'>
+            <Link href='/dashboard'>
               <Image
                 src='/images/logo.svg'
                 alt='Main Logo'
@@ -255,15 +234,53 @@ const Header = ({backgroundCol,displayShare,filterToken}) => {
             </Link>
           </Navbar.Brand>
 
-          <Navbar.Content>
+          <Navbar.Content css={{paddingRight:"3vw"}}>
+          <Image
+                src='/images/notificationWithNew.png'
+                alt='Main Logo'
+                objectFit='contain'
+                loading='lazy'
+                width={"25px"}
+              />
+           <Grid >
+        <Dropdown placement="bottom-left">
+          <Dropdown.Trigger>
+            <User
+              bordered
+              as="button"
+              size="md"
+              color="primary"
+              name={<h4>{session.user.name}</h4>}
+              src={session.user.profilePhoto?session.user.profilePhoto:'/images/profilepic.png'}
+              
+            />
+          </Dropdown.Trigger>
+          <Dropdown.Menu color="primary" aria-label="User Actions">
+            <Dropdown.Item key="profile" css={{ height: "$18" }} >
+              <Text b color="inherit" css={{ d: "flex" }}>
+                Signed in as
+              </Text>
+              <Text b color="inherit" css={{ d: "flex" }}>
+              {session.user.email}
+              </Text>
+            </Dropdown.Item>
+            <Dropdown.Item key="settings" withDivider>
+            <Grid onClick={() => router.push("/setting")}>Settings</Grid>
+            </Dropdown.Item>
             
-          <Button onPress={() => authService.signOut()} auto className='hyper-btn'>
+            <Dropdown.Item key="logout" color="error" withDivider >
+              <Grid onClick={() => authService.signOut()}>Log Out</Grid>
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </Grid>
+          {/* <Button onPress={() => authService.signOut()} auto className='hyper-btn'>
               Sign Out {session.user.name}
             </Button>
-
-              <Button size="sm" onPress={() => setDispSnippet(true)} css={{ height:"50%",color:"#201E7B",background:"white",border:"2px solid",borderColor:"#201E7B" }}>
+ */}
+              {displayShare==true && <Button size="sm" onPress={() => setDispSnippet(true)} css={{ height:"50%",color:"#201E7B",background:"white",border:"2px solid",borderColor:"#201E7B" }}>
               <Text size="$xs" weight="bold" css={{letterSpacing:"1px",color:"#201E7B"}}>CODE SNIPPET</Text> 
-              </Button>
+              </Button>}
 
               {displayShare==true && <Button size="sm" onPress={() =>{setDispShare(true)}} css={{ height:"50%",background:"#201E7B",border:"2px solid",borderColor:"#201E7B" }}>
                         <Text size="$xs" weight="bold" css={{color:"white",letterSpacing:"1px"}}>SHARE</Text> 
@@ -271,25 +288,6 @@ const Header = ({backgroundCol,displayShare,filterToken}) => {
 
           </Navbar.Content>
 
-          
-
-
-         
-          <Navbar.Collapse>
-            {collapseItems.map((item, index) => (
-              <Navbar.CollapseItem key={index}>
-                <Link
-                  color='inherit'
-                  css={{
-                    minWidth: '100%',
-                  }}
-                  href={item.link}
-                >
-                  {item.title}
-                </Link>
-              </Navbar.CollapseItem>
-            ))}
-          </Navbar.Collapse>
         </Navbar>
       ) : (
         <Navbar

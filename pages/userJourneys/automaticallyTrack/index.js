@@ -14,6 +14,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Header from "../../../components/Header";
 import {
   paymentService,
+  personalPixelService,
   userJourneyService,
   websiteService,
 } from "../../../services";
@@ -21,15 +22,13 @@ import { Calendar } from "react-calendar"
 import 'react-calendar/dist/Calendar.css';
 import { TransformWrapper, TransformComponent , } from "react-zoom-pan-pinch";
 import  SSListingAuto from "../../../components/userJourneyAutoSSlisting"
-import axios from "axios";
 import JourneyAutoFilter from "../../../components/autoUserJournyFilter";
 import ScrollContainer from 'react-indiana-drag-scroll'
 import Cookies from 'js-cookie';
 import MyPage from "../../../components/zoomin-zoom-out";
 import jwt, { decode } from 'jsonwebtoken';
-import { async } from "rxjs";
 
-const UserJourneyAuto = ({ website,websiteStatus, error,message }) => {
+const UserJourneyAuto = ({ website,websiteStatus, error,message,pixelVerified,isNotOwnId }) => {
   const router = useRouter();
   const { query } = useRouter();
 
@@ -56,8 +55,10 @@ useEffect(() => {
   const accessToken = Cookies.get('accessToken')?Cookies.get('accessToken'):null;
   const id=query.id?query.id:null
   const filterIdGet=query.filterId?query.filterId:null
-
-  if (!user || !accessToken) {
+  if(pixelVerified!=true && isNotOwnId!=true){
+    router.push(`/personalPixel?webiteId=${id}`)
+  }
+  else if (!user || !accessToken) {
     if(id != null){
       router.push(`/userJourneys/automaticallyTrack/share?id=${id}&filterId=${filterIdGet}`)
     }else{
@@ -66,8 +67,11 @@ useEffect(() => {
     
   }
   else if ( user && accessToken && user.isSubscribed) {
+    if(id == null){
+      router.push('/dashboard')
+    }
     //console.log(session.user.isSubscribed)
-    if(id != null && website.websiteId && website.websiteId!=id){
+    else if(id != null && isNotOwnId==true){
       router.push(`/userJourneys/automaticallyTrack/share?id=${id}&filterId=${filterIdGet}`)
     }
     else{
@@ -78,7 +82,7 @@ useEffect(() => {
     if (websiteStatus !== 200 || error) {
       setError(message?message:error?error:"error");
       console.log(error)
-      router.push("/personalPixel");
+      router.push(`/personalPixel?webiteId=${id}`);
     }else{
       const testData=async () =>{
         if(filterIdGet != null){
@@ -111,7 +115,10 @@ useEffect(() => {
     }}
     //setLoading(false);
   } else if(user && accessToken){
-    if(id != null && website.websiteId && website.websiteId!=id){
+    if(id == null){
+      router.push('/dashboard')
+    }
+    else if(id != null && isNotOwnId==true){
       router.push(`/userJourneys/automaticallyTrack/share?id=${id}&filterId=${filterIdGet}`)
     }
     else{setSession({user,accessToken})
@@ -120,7 +127,7 @@ useEffect(() => {
     if (websiteStatus !== 200 || error) {
       setError(message?message:error?error:"error");
       console.log(error);
-      router.push("/personalPixel");
+      router.push("/dashboard");
     } else {
       paymentService.isSubscribed(session).then(async (res) => {
         //console.log(res);
@@ -248,7 +255,7 @@ const getDateRange= async (range)=>{
     <div className="" style={{width:'auto',height:"90vh"}}>
       
       <div>
-      <Header backgroundCol="white" displayShare={true} filterToken={filterToken} />
+      <Header backgroundCol="white" displayShare={true} filterToken={filterToken} websiteData={website} />
       </div>
       {loading?<></>
       :
@@ -354,6 +361,7 @@ const getDateRange= async (range)=>{
 
 export async function getServerSideProps(context) {
     const { req } = context;
+    const { query } = context;
     const cookies=req.headers.cookie?context.req.headers.cookie:null;
     const userCookie = cookies ? cookies.split(';').find(c => c.trim().startsWith('user=')) : null;
     const user = userCookie ? JSON.parse(decodeURIComponent(userCookie.split('=')[1])) : null;
@@ -363,14 +371,14 @@ export async function getServerSideProps(context) {
   try {
     if (user && accessToken) {
       const session={user,accessToken}
-      const websiteResponse = await websiteService.getWebsiteByUser(session);
-      //console.log("websiteResponse :", websiteResponse.website.pages);
+      const websiteResponse = await websiteService.getWebsiteByUser(session,query.id);
+      const alredyVerified=await personalPixelService.verifyPixel(session, query.id)
       if (websiteResponse.status === 200 && websiteResponse?.website?.pages.length>0) {
         const userJourneyResponse = await userJourneyService.getUserJourneysAuto(
           session,
           websiteResponse.website.websiteId
         );
-        console.log("User Journeys x", userJourneyResponse);
+        //console.log("User Journeys x", userJourneyResponse);
         if (userJourneyResponse.status == 200) {
           const updatedWebsite = {
             ...websiteResponse.website,
@@ -380,6 +388,7 @@ export async function getServerSideProps(context) {
             props: {
               websiteStatus: websiteResponse.status,
               website: updatedWebsite,
+              pixelVerified:alredyVerified?.verified
             },
           };
         } else {
@@ -387,21 +396,36 @@ export async function getServerSideProps(context) {
             props: {
               websiteStatus: userJourneyResponse.status,
               error: userJourneyResponse.message,
+              pixelVerified:alredyVerified?.verified
             },
           };
         }
-      } else {
+      } else if(websiteResponse.status === 200){
+        return {
+          props: {
+            websiteStatus: websiteResponse.status,
+            website: "",
+            pixelVerified:false
+          },
+        };
+      }
+      
+      else {
         //console.log()
         return {
           props: {
             websiteStatus: websiteResponse.status,
+            pixelVerified:alredyVerified?.verified,
+            isNotOwnId:true,
             error: websiteResponse.error?websiteResponse.error:websiteResponse.message?websiteResponse.message:"error",
           },
         };
       }
     } else {
       return {
-        props: {},
+        props: {
+          isNotOwnId:true,
+        },
       };
     }
   } catch (error) {

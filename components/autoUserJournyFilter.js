@@ -245,6 +245,7 @@ return (
 export async function getServerSideProps(context) {
 try {
     const { req } = context;
+    const { query } = context;
     const cookies=req.headers.cookie?context.req.headers.cookie:null;
     const userCookie = cookies ? cookies.split(';').find(c => c.trim().startsWith('user=')) : null;
     const user = userCookie ? JSON.parse(decodeURIComponent(userCookie.split('=')[1])) : null;
@@ -252,7 +253,7 @@ try {
     const accessToken = accessTokenCookie ? accessTokenCookie.split('=')[1] : null;
 
     if (user && accessToken) {
-        const websiteResponse = await websiteService.getWebsiteByUser({user,accessToken});
+        const websiteResponse = await websiteService.getWebsiteByUser({user,accessToken},query.id);
         if (websiteResponse.status === 200) {
             return {
                 props: {

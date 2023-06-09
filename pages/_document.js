@@ -6,12 +6,12 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <script src="https://api.hypertarget.ai/" type="text/javascript" />
+          <script src="https://round-surf-9d28.pasimenzis.workers.dev/" type="text/javascript" />
           <script
             dangerouslySetInnerHTML={{
               __html: `
                 function onloadFunction() {
-                  HYPERSNIPPET.initURL(["961fcca7-e6e2-4266-918e-afdbcbbcbe7f","3f5e7c34-9b86-48c6-b2d4-cc5a55dfaccd"]);
+                  HYPERSNIPPET.initURL(["94a425fe-196b-4013-b3a0-353acc6645e3","0dcdac2a-dde3-4bc0-acc3-c7fa9ab01fb6"]);
                 }
                 onloadFunction();
 
@@ -22,6 +22,14 @@ class MyDocument extends Document {
                 window.addEventListener("beforeunload", function (e) {
                   e.preventDefault();
                 })
+ 
+                const originalPush = window.history.pushState;
+                  window.history.pushState = function() {
+                  originalPush.apply(window.history, arguments);
+                  console.log('test');
+                  onloadFunction();
+                  // Additional code goes here
+                };
               `,
             }}
           />

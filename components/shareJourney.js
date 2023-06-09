@@ -6,7 +6,7 @@ import { websiteService, userJourneyService, paymentService } from "../services"
 import sendEmail from "./emailSend";
 import { useRouter } from "next/router";
 
-function ShareComponent({user,session,filterToken}) {
+function ShareComponent({user,session,filterToken,id}) {
   console.log(filterToken)
     const [isAnyoneCan, setIsAnyonecan] = useState(true)
     const [website,setWebsite]=useState("")
@@ -21,7 +21,7 @@ function ShareComponent({user,session,filterToken}) {
 
     useEffect(() => {
         const getWebsite=async()=>{
-          const websiteResponse = await websiteService.getWebsiteByUser(session);
+          const websiteResponse = await websiteService.getWebsiteByUser(session,id);
           //console.log("websiteResponseShare :",websiteResponse)
         if (websiteResponse.status === 200 ) {
           setWebsite(websiteResponse.website)

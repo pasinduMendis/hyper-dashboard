@@ -24,13 +24,13 @@ const PricingPage = () => {
     else if ( user && accessToken && user.isSubscribed) {
       //console.log(session.user.isSubscribed)
       setSession(user,accessToken)
-      router.push('/personalPixel/getDomain')
+      router.push('/dashboard')
       //setLoading(false);
     } else if(user && accessToken){
       paymentService.isSubscribed({user,accessToken}).then((res)=>{
         //console.log(res)
         if(res.status==200 && res.isSubscribed==true){
-          router.push('/personalPixel/getDomain')
+          router.push('/dashboard')
         }else{
           setLoading(false)
         }
