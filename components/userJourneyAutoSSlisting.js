@@ -219,7 +219,7 @@ const SSListingAuto = ({item,id,showXarrow}) => {
                     <Image
                       src={journeyStepItem.ss && journeyStepItem.ss.length>0?journeyStepItem.ss[0].location:"/images/no_ss.png"}
                       objectFit="fill"
-                      id={StepId==0?`${journeyStepItem.item_id}start2-${id}-${StepId}`:""}
+                      id={StepId==0?`${journeyStepItem.item_id}start-${id}-${StepId}`:""}
                       css={{ maxHeight: `${StepId==0?"80vh":"70vh"}`, minWidth: "auto",border:"1px solid #D0D0D0" }}
                     />}
         
