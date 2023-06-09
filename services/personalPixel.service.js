@@ -55,7 +55,7 @@ async function verifyPixel(session, websiteId) {
         const res = await axios.post(url, { websiteId: websiteId }, config);
 
         if (res.status === 200) {
-            console.log("pixel :",res.data)
+            //console.log("pixel :",res.data)
             return res.data;
             
         } else {

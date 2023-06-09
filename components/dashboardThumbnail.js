@@ -18,7 +18,7 @@ import {
   } from "../services";
   import 'react-calendar/dist/Calendar.css';
   import { TransformWrapper, TransformComponent , } from "react-zoom-pan-pinch";
-  import  SSListingAuto from "./userJourneyAutoSSlisting"
+  import  SSListingAuto from "./userJourneySSListforThumb"
   import ScrollContainer from 'react-indiana-drag-scroll'
   import Cookies from 'js-cookie';
   import MyPage from "./zoomin-zoom-out";
@@ -107,7 +107,7 @@ import {
       <div className="" style={{width:'auto',height:"90vh",zoom:"0.3"}}>
       {userJourneyArr && userJourneyArr.length>0 && userJourneyArr.map((item,id)=>{
             if(id==0){return <>
-            <SSListingAuto item={item} id={id} key={id} showXarrow={xArrowloading} />
+            <SSListingAuto item={item} id={id} key={id} showXarrow={xArrowloading} websiteId={website_id}/>
             </>}
           })}
   

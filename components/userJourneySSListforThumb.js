@@ -3,7 +3,7 @@ import { Grid, Image, Text } from "@nextui-org/react"
 import { useState } from "react";
 import Xarrow,{useXarrow } from "react-xarrows";
 
-const SSListingAuto = ({item,id,showXarrow}) => {
+const SSListingAuto = ({item,id,showXarrow,websiteId}) => {
   const [xArrowDisp,setXArroeDisp]=useState(true)
 
     return (
@@ -22,7 +22,7 @@ const SSListingAuto = ({item,id,showXarrow}) => {
                   <Grid css={{display:"inline-flex",overflowX:"auto",overflowY:"hidden",alignItems:"center"}} >
           <Grid direction="column" xl={3} lg={3} md={3} sm={12} xs={12} css={{minWidth:"20vw",}}>
             {item && item.result && item.result[0] && item.result[0][0] &&  
-            <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"   }} id={`socialRef1-${id}`}>
+            <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"   }} id={websiteId?`socialRef1-${id}-${websiteId}`:`socialRef1-${id}`}>
             <div style={{
             marginLeft: "auto",
             marginRight: 0,
@@ -47,7 +47,7 @@ const SSListingAuto = ({item,id,showXarrow}) => {
               
               </div>
             </Grid>}
-           {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"   }} id={`socialRef2-${id}`}>
+           {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"   }} id={websiteId?`socialRef2-${id}-${websiteId}`:`socialRef2-${id}`}>
             <div style={{
             marginLeft: "auto",
             marginRight: 0,
@@ -72,7 +72,7 @@ const SSListingAuto = ({item,id,showXarrow}) => {
               
               </div>
             </Grid>}
-            {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%" ,height:"18vh" }} id={`socialRef3-${id}`}>
+            {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%" ,height:"18vh" }} id={websiteId?`socialRef3-${id}-${websiteId}`:`socialRef3-${id}`}>
             <div style={{
             marginLeft: "auto",
             marginRight: "10px",
@@ -95,7 +95,7 @@ const SSListingAuto = ({item,id,showXarrow}) => {
             />
               </div>
             </Grid>}
-            {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"  }} id={`socialRef4-${id}`}>
+            {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"  }} id={websiteId?`socialRef4-${id}-${websiteId}`:`socialRef4-${id}`}>
             <div style={{
             marginLeft: "auto",
             marginRight: 0,
@@ -145,7 +145,7 @@ const SSListingAuto = ({item,id,showXarrow}) => {
               
               </div>
             </Grid>} */}
-            {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"   }} id={`socialRef5-${id}`}>
+            {item && item.result && item.result[0] && item.result[0][0] && <Grid css={{ width: "auto",minWidth:"90%", maxWidth: "90%",height:"18vh"   }} id={websiteId?`socialRef5-${id}-${websiteId}`:`socialRef5-${id}`}>
             <div style={{
             marginLeft: "auto",
             marginRight: 0,
@@ -217,15 +217,15 @@ const SSListingAuto = ({item,id,showXarrow}) => {
                     </>
                     :
                     <Image
-                      src={journeyStepItem.ss && journeyStepItem.ss.length>0?journeyStepItem.ss[0].location:"/images/no_ss.png"}
+                    src={journeyStepItem.ss && journeyStepItem.ss.length>0?journeyStepItem.ss[0].location:"/images/no_ss.png"}
                       objectFit="fill"
-                      id={StepId==0?`${journeyStepItem.item_id}start2-${id}-${StepId}`:""}
+                      id={StepId==0?(`${journeyStepItem.item_id}start2-${id}-${StepId}`):""}
                       css={{ maxHeight: `${StepId==0?"80vh":"70vh"}`, minWidth: "auto",border:"1px solid #D0D0D0" }}
                     />}
         
         {StepId==0?
         <>
-        <div id={`${journeyStepItem.item_id}start-${id}-${StepId}`}  style={{position: "absolute", left: "50%",top:"-300%",height:"700%",background:"red"}}>
+        <div id={websiteId?`${journeyStepItem.item_id}start-${id}-${StepId}`:`${journeyStepItem.item_id}start-${id}-${StepId}-${websiteId}`}  style={{position: "absolute", left: "50%",top:"-300%",height:"700%",background:"red"}}>
       <div  style={{position: "relative", top: "50%", border: "dotted red 1px",display:"none"}}>
         .
       </div>
@@ -260,8 +260,8 @@ const SSListingAuto = ({item,id,showXarrow}) => {
           showTail={true}
           tailShape="circle"
           tailSize={3}
-          start={`socialRef1-${id}`} //can be react ref
-          end={`${journeyStepItem.item_id}start-${id}-${StepId}`} //or an id
+          start={websiteId?`socialRef1-${id}-${websiteId}`:`socialRef1-${id}`} //can be react ref
+          end={websiteId?`${journeyStepItem.item_id}start-${id}-${StepId}`:`${journeyStepItem.item_id}start-${id}-${StepId}-${websiteId}`} //or an id
         />
         <Xarrow showXarrow={xArrowDisp && showXarrow}
           strokeWidth={2}
@@ -269,8 +269,8 @@ const SSListingAuto = ({item,id,showXarrow}) => {
           endAnchor="left"
           showHead={false}
           showTail={true}
-          start={`socialRef2-${id}`} //can be react ref
-          end={`${journeyStepItem.item_id}start-${id}-${StepId}`} //or an id
+          start={websiteId?`socialRef2-${id}-${websiteId}`:`socialRef2-${id}`} //can be react ref
+          end={websiteId?`${journeyStepItem.item_id}start-${id}-${StepId}`:`${journeyStepItem.item_id}start-${id}-${StepId}-${websiteId}`} //or an id
           tailShape="circle"
           tailSize={3}
         />
@@ -282,8 +282,8 @@ const SSListingAuto = ({item,id,showXarrow}) => {
             tailSize={3}
             startAnchor="right"
             endAnchor="left"
-          start={`socialRef3-${id}`} //can be react ref
-          end={`${journeyStepItem.item_id}start-${id}-${StepId}`} //or an id
+            start={websiteId?`socialRef3-${id}-${websiteId}`:`socialRef3-${id}`} //can be react ref
+            end={websiteId?`${journeyStepItem.item_id}start-${id}-${StepId}`:`${journeyStepItem.item_id}start-${id}-${StepId}-${websiteId}`}
         />
         <Xarrow showXarrow={xArrowDisp && showXarrow}
      strokeWidth={2}
@@ -293,8 +293,8 @@ const SSListingAuto = ({item,id,showXarrow}) => {
 showTail={true}
 tailShape="circle"
           tailSize={3}
-          start={`socialRef4-${id}`} //can be react ref
-          end={`${journeyStepItem.item_id}start-${id}-${StepId}`} //or an id
+          start={websiteId?`socialRef4-${id}-${websiteId}`:`socialRef4-${id}`} //can be react ref
+          end={websiteId?`${journeyStepItem.item_id}start-${id}-${StepId}`:`${journeyStepItem.item_id}start-${id}-${StepId}-${websiteId}`} //or an id
         />
         <Xarrow showXarrow={xArrowDisp && showXarrow}
      strokeWidth={2}
@@ -304,8 +304,8 @@ tailShape="circle"
 showTail={true}
 tailShape="circle"
           tailSize={3}
-          start={`socialRef5-${id}`} //can be react ref
-          end={`${journeyStepItem.item_id}start-${id}-${StepId}`} //or an id
+          start={websiteId?`socialRef5-${id}-${websiteId}`:`socialRef5-${id}`} //can be react ref
+          end={websiteId?`${journeyStepItem.item_id}start-${id}-${StepId}`:`${journeyStepItem.item_id}start-${id}-${StepId}-${websiteId}`}//or an id
         />
                 </>:
                 <Xarrow showXarrow={xArrowDisp && showXarrow}
